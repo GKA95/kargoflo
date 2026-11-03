@@ -1,0 +1,1012 @@
+# PROMPT 2: COMPLETE BACKEND DEVELOPMENT, DATABASE INTEGRATION, AUTHENTICATION, PAYMENTS, SECURITY AND DEPLOYMENT
+
+Act as a Senior Full-Stack Developer, Backend Architect, Database Engineer and Cybersecurity Engineer.
+
+I have already developed the complete frontend of my Delivery Management Website Application in this project.
+
+Now I want you to implement the complete backend, connect the database, implement authentication, integrate payments, implement automated delivery management, add privacy and legal functionality, and prepare the application for GitHub and Vercel deployment.
+
+THIS IS AN EXTENSION OF MY EXISTING PROJECT.
+
+Do not create a new application. Do not rebuild the frontend. Do not redesign the existing pages.
+
+==================================================
+1. TECHNOLOGY STACK
+==================================================
+
+Use this exact architecture:
+
+FRONTEND:
+- React
+- TypeScript
+- Tailwind CSS
+
+BACKEND:
+- Node.js
+- Express.js
+- REST API
+
+DATABASE:
+- MongoDB Atlas
+- Mongoose
+
+AUTHENTICATION:
+- Google Identity Services
+- Email and password authentication
+- Argon2id password hashing
+- Express sessions
+- MongoDB-backed session storage
+- Secure HTTP-only cookies
+
+PAYMENTS:
+- Paystack
+
+MAPS:
+- Leaflet
+- OpenStreetMap
+
+EMAIL:
+- Resend, when configured.
+
+DEPLOYMENT:
+- GitHub
+- Vercel
+
+Do not use Firebase, Firestore, Supabase or unnecessary paid authentication providers.
+
+Inspect my existing project and reuse its installed packages and components wherever possible.
+
+==================================================
+2. IMPORTANT DEVELOPMENT RULES
+==================================================
+
+1. Preserve my existing frontend design, branding, layouts and navigation.
+2. Do not regenerate completed frontend pages.
+3. Do not remove existing functionality.
+4. Do not introduce unnecessary dependencies.
+5. Do not repeat work that has already been completed.
+6. Implement functionality directly in the existing project.
+7. Use modular, maintainable code.
+8. Validate all backend inputs.
+9. Protect all sensitive information.
+10. Do not use fake APIs or simulated successful operations.
+
+NO MOCK DATA:
+
+This is a strict project requirement.
+
+Do not generate:
+- Fake customers.
+- Fake riders.
+- Fake administrators.
+- Fake deliveries.
+- Fake payments.
+- Fake refunds.
+- Fake reviews.
+- Fake earnings.
+- Fake notifications.
+- Fake GPS coordinates.
+- Fake dashboard statistics.
+- Fake testimonials.
+- Demonstration accounts.
+
+Do not automatically seed the database.
+
+Every business record must come from the real MongoDB database.
+
+When there is no data, return a genuine empty response.
+
+When an integration is not configured, display an appropriate unavailable or configuration message.
+
+Testing may use a separate isolated test database, but test records must never enter production collections or appear as real business information.
+
+==================================================
+3. MONGODB DATABASE INTEGRATION
+==================================================
+
+Connect the application to MongoDB Atlas using Mongoose.
+
+Environment variable:
+
+MONGODB_URI=
+
+Create a reusable database connection module.
+
+Implement:
+- Reliable database connection handling.
+- Connection reuse suitable for Vercel Functions.
+- Error handling.
+- Schema validation.
+- Database indexes.
+- Proper relationships and references.
+- Pagination.
+- Secure database queries.
+
+Create these collections:
+
+1. users
+2. riderProfiles
+3. deliveries
+4. payments
+5. refunds
+6. riderOffers
+7. notifications
+8. reviews
+9. supportTickets
+10. pricingSettings
+11. policies
+12. consentRecords
+13. privacyRequests
+14. auditLogs
+15. paymentWebhookEvents
+
+Create the appropriate Mongoose models.
+
+Use timestamps and appropriate validation.
+
+Create unique indexes for email addresses and transaction references where required.
+
+Do not expose unnecessary personal information through database queries or API responses.
+
+Do not delete existing data when implementing the database integration.
+
+==================================================
+4. COMPLETE AUTHENTICATION SYSTEM
+==================================================
+
+Implement functional authentication for customers, riders and administrators.
+
+CUSTOMER:
+- Registration.
+- Login.
+- Logout.
+- Forgot password.
+- Password reset.
+- Email verification.
+- Profile management.
+- Change password.
+
+RIDER:
+- Registration.
+- Login.
+- Logout.
+- Forgot password.
+- Password reset.
+- Email verification.
+- Rider profile management.
+
+ADMINISTRATOR:
+- Secure login.
+- Secure logout.
+- Multi-factor authentication.
+- Protected account recovery.
+
+Use Argon2id for password hashing.
+
+Use secure server-side sessions stored in MongoDB.
+
+Implement:
+- HTTP-only cookies.
+- Secure cookies in production.
+- Appropriate SameSite settings.
+- Session rotation after login.
+- Session expiration.
+- Session invalidation on logout.
+- CSRF protection.
+- Login rate limiting.
+- Password reset tokens with expiration.
+- Protection against brute-force attacks.
+
+Do not store passwords or session tokens in localStorage or sessionStorage.
+
+Never allow public administrator registration.
+
+Create an authorized one-time administrator setup procedure that does not expose an administrator creation endpoint to the public.
+
+==================================================
+5. GOOGLE SIGN-IN AUTHENTICATION
+==================================================
+
+Implement real Google Sign-In using Google Identity Services.
+
+Use the google-auth-library package for backend token verification.
+
+Environment variable:
+
+GOOGLE_CLIENT_ID=
+
+Authentication process:
+
+1. User clicks Continue with Google.
+2. Google opens its account selection and authentication interface.
+3. Google returns an ID token.
+4. Frontend sends the ID token to Express over HTTPS.
+5. Backend verifies the token.
+6. Verify signature, audience, issuer and expiration.
+7. Check email verification.
+8. Identify the Google account using its unique subject identifier.
+9. Find or create the corresponding MongoDB account.
+10. Establish a secure server-side application session.
+11. Redirect to the appropriate portal.
+
+ACCOUNT RULES:
+
+- New customers registering through Google receive the customer role.
+- New riders registering through Google receive the rider role with pending approval.
+- Existing accounts can be linked to Google through a secure account-linking process.
+- Never automatically link accounts solely because an email address matches.
+- Never allow Google authentication to create administrator accounts.
+- Only previously authorized administrators can access the administrator portal.
+
+Do not request Google permissions for Gmail, Drive, Contacts or unrelated Google services.
+
+Do not use the Google ID token as the application's session token.
+
+Keep the existing email and password authentication working alongside Google Sign-In.
+
+==================================================
+6. ROLE-BASED ACCESS CONTROL
+==================================================
+
+Create three main account roles:
+
+customer
+rider
+admin
+
+CUSTOMER PERMISSIONS:
+
+- Access their own profile.
+- Create delivery requests.
+- View their own deliveries.
+- Track their own deliveries.
+- View their own payment history.
+- Submit refund requests.
+- Submit reviews and complaints.
+
+RIDER PERMISSIONS:
+
+- Manage their own rider profile.
+- Set availability.
+- Receive delivery offers.
+- Accept or reject eligible deliveries.
+- View assigned deliveries.
+- Update authorized delivery statuses.
+- Confirm delivery completion.
+- View their own earnings and history.
+
+ADMINISTRATOR PERMISSIONS:
+
+- Manage customers.
+- Approve or reject riders.
+- Manage deliveries.
+- Manage pricing.
+- Monitor payments.
+- Approve and initiate authorized refunds.
+- Manage complaints.
+- Manage policies.
+- View reports.
+- Review security logs.
+
+Enforce authorization on every protected API endpoint.
+
+Never trust user roles supplied by the frontend.
+
+Prevent customers and riders from accessing another user's private information.
+
+==================================================
+7. RIDER REGISTRATION AND APPROVAL
+==================================================
+
+Implement complete rider registration.
+
+Collect:
+- Full name.
+- Email address.
+- Phone number.
+- Residential location.
+- Vehicle type.
+- Vehicle information.
+- Identification information where necessary.
+
+Rider approval statuses:
+
+- pending
+- approved
+- rejected
+- suspended
+
+New riders must automatically receive pending approval status.
+
+Only administrators can approve or reject rider applications.
+
+Only approved riders can receive delivery assignments.
+
+Do not allow riders to approve themselves.
+
+Protect identity documents.
+
+Do not use public storage URLs for sensitive identification files.
+
+If secure private document storage has not been configured, disable document upload and clearly explain the missing configuration rather than saving sensitive files publicly or on temporary Vercel storage.
+
+==================================================
+8. DELIVERY MANAGEMENT SYSTEM
+==================================================
+
+Connect the existing customer, rider and administrator delivery interfaces to MongoDB.
+
+CUSTOMER FUNCTIONS:
+
+- Create delivery requests.
+- Enter pickup addresses.
+- Enter destination addresses.
+- Enter recipient information.
+- Enter parcel details.
+- Select delivery categories.
+- View calculated delivery charges.
+- Confirm booking.
+- Make payment.
+- Track deliveries.
+- Cancel eligible deliveries.
+- View delivery history.
+
+RIDER FUNCTIONS:
+
+- Receive delivery requests.
+- Accept or reject requests.
+- View assigned deliveries.
+- Confirm package pickup.
+- Update delivery status.
+- Confirm successful delivery.
+- Submit proof of delivery when configured.
+
+ADMINISTRATOR FUNCTIONS:
+
+- View all deliveries.
+- Search and filter deliveries.
+- Monitor active deliveries.
+- Handle failed deliveries.
+- Manage cancellations.
+- Investigate delivery complaints.
+
+Use controlled delivery statuses:
+
+- awaiting_payment
+- payment_confirmed
+- awaiting_rider
+- rider_assigned
+- rider_accepted
+- picked_up
+- in_transit
+- delivered
+- cancelled
+- failed
+
+Validate all status changes on the backend.
+
+Record the user responsible for each status change and the timestamp.
+
+==================================================
+9. AUTOMATIC RIDER ASSIGNMENT
+==================================================
+
+Implement automatic rider assignment using backend logic.
+
+After successful payment verification:
+
+1. Find eligible riders.
+2. Check rider approval status.
+3. Check online availability.
+4. Check service area and current workload.
+5. Select an appropriate rider.
+6. Create a delivery offer.
+7. Notify the selected rider.
+8. Allow the rider to accept or reject.
+9. Reassign the offer after rejection or expiration.
+10. Notify the customer about progress.
+
+Use atomic MongoDB operations to ensure only one rider can accept a particular delivery.
+
+Never assign a delivery to:
+- An unapproved rider.
+- A suspended rider.
+- An offline rider.
+- A rider who is already unavailable.
+
+If no eligible rider exists, keep the order in awaiting_rider status.
+
+Use real rider location information only when location permission has been granted.
+
+Do not invent GPS locations.
+
+For Vercel compatibility, do not depend on setTimeout, setInterval or permanently running background processes.
+
+Store offer expiration timestamps in MongoDB.
+
+Implement expiration checks during relevant API operations.
+
+If an additional scheduled service is required for reliable unattended offer expiration, document the lowest-cost suitable option. Do not silently introduce a paid service.
+
+==================================================
+10. PAYSTACK PAYMENT INTEGRATION
+==================================================
+
+Implement real Paystack integration for Ghana.
+
+Use:
+
+PAYSTACK_SECRET_KEY=
+PAYSTACK_PUBLIC_KEY=
+PAYMENT_CURRENCY=GHS
+
+Support available Ghanaian payment channels through Paystack, including Mobile Money and cards where enabled.
+
+PAYMENT WORKFLOW:
+
+1. Customer submits a delivery request.
+2. Backend retrieves the configured pricing.
+3. Backend calculates the total payment.
+4. Backend initializes the Paystack transaction.
+5. Customer completes payment.
+6. Backend verifies the transaction.
+7. Backend verifies webhook signatures.
+8. Backend checks the transaction reference, amount, currency and associated order.
+9. MongoDB payment record is updated.
+10. Delivery is marked paid only after successful verification.
+11. The system initiates rider assignment.
+
+SECURITY:
+
+- Keep secret keys on the backend.
+- Never trust frontend payment success messages.
+- Verify transactions using Paystack's API.
+- Verify webhook signatures using the raw request body and HMAC SHA512.
+- Use timing-safe signature comparison.
+- Process webhooks idempotently.
+- Prevent duplicate transactions from being processed.
+- Prevent a transaction from paying for multiple delivery orders.
+- Never store card numbers or CVVs.
+
+Use integer pesewas for monetary calculations.
+
+Do not hardcode delivery prices.
+
+If pricing is not configured, prevent checkout and ask the administrator to configure pricing.
+
+Start with Paystack test mode.
+
+Do not enable live payments until real test transactions and webhook verification have passed.
+
+==================================================
+11. REFUND MANAGEMENT
+==================================================
+
+Implement complete refund management.
+
+CUSTOMERS:
+
+- Submit refund requests.
+- Enter refund reasons.
+- View refund request history.
+- Track refund status.
+
+ADMINISTRATORS:
+
+- Review refund requests.
+- Investigate requests.
+- Approve or reject requests.
+- Provide decision reasons.
+- Initiate full or partial refunds through Paystack.
+- Review refund references and status.
+
+Refund statuses:
+
+- requested
+- under_review
+- approved
+- rejected
+- processing
+- processed
+- failed
+
+Implement refund verification using Paystack's refund functionality and available webhook events.
+
+Prevent duplicate refunds.
+
+The cumulative refund amount must never exceed the original successful payment.
+
+Never claim that a refund is complete before its final status is verified.
+
+Keep an audit trail.
+
+==================================================
+12. PRIVACY AND LEGAL POLICIES
+==================================================
+
+Integrate the following pages into the existing website:
+
+1. Privacy Policy.
+2. Terms and Conditions.
+3. Payment Policy.
+4. Refund and Cancellation Policy.
+5. Cookie Policy.
+
+Use Ghana's Data Protection Act, 2012 (Act 843), as an important compliance reference.
+
+PRIVACY POLICY SHOULD COVER:
+
+- Customer personal information.
+- Rider personal information.
+- Google authentication information.
+- Delivery addresses.
+- GPS location data.
+- Payment references.
+- Rider identification information.
+- Purposes of data collection.
+- Data sharing.
+- Third-party service providers.
+- Data retention.
+- Data protection.
+- User privacy rights.
+- Account deletion.
+- Privacy complaints.
+- Cookies.
+- Cross-border data processing.
+
+TERMS AND CONDITIONS SHOULD COVER:
+
+- Account responsibilities.
+- Customer responsibilities.
+- Rider responsibilities.
+- Delivery requirements.
+- Prohibited parcels.
+- Payment obligations.
+- Delivery delays.
+- Cancellation.
+- Liability and dispute resolution.
+
+PAYMENT POLICY SHOULD COVER:
+
+- Available payment methods.
+- Delivery charges.
+- Payment confirmation.
+- Failed payments.
+- Duplicate transactions.
+- Payment receipts.
+- Payment disputes.
+
+REFUND POLICY SHOULD COVER:
+
+- Eligible cancellations.
+- Failed deliveries.
+- Duplicate payments.
+- Incorrect charges.
+- Lost or damaged packages.
+- Full and partial refunds.
+- Refund investigation and tracking.
+
+COOKIE POLICY SHOULD EXPLAIN:
+
+- Necessary cookies.
+- Authentication cookies.
+- Preference cookies.
+- Analytics cookies, if enabled.
+- How users manage preferences.
+
+Implement privacy request functionality for:
+
+- Personal data access.
+- Personal data correction.
+- Deletion requests.
+- Privacy complaints.
+
+Implement policy version management.
+
+Record:
+- User identifier.
+- Policy version.
+- Acceptance timestamp.
+- Relevant consent purpose.
+
+Make marketing consent optional and separate.
+
+Do not treat acknowledgment of a Privacy Policy as consent to all forms of processing.
+
+Do not invent company registration information, physical addresses, contact information or legal certifications.
+
+Use clear placeholders for missing business information.
+
+Keep policy drafts subject to business owner review and professional legal review before publication.
+
+Explain that generating policy pages alone does not establish legal compliance. Document the applicable Ghana Data Protection Commission registration and compliance requirements before launch.
+
+==================================================
+13. PRICING AND BUSINESS RULES
+==================================================
+
+Create an administrator pricing module.
+
+Allow the administrator to configure:
+
+- Base delivery fee.
+- Distance-based charges.
+- Delivery categories.
+- Additional charges.
+- Cancellation charges.
+- Applicable refund rules.
+
+Do not invent default business prices.
+
+Do not display fabricated prices to customers.
+
+All price calculations must happen on the backend.
+
+Display a complete cost breakdown before payment.
+
+Use the following proposed refund scenarios as configurable starting rules:
+
+- Failed payment: no confirmed paid order.
+- Confirmed duplicate successful payment: investigate and refund.
+- Cancellation before rider acceptance: eligible for full refund under the published policy.
+- Cancellation after rider acceptance: apply only clearly disclosed charges.
+- Cancellation after package pickup: follow the published exception policy.
+- Delivery failure attributable to the platform: investigate and determine appropriate refund.
+- Lost or damaged parcels: investigate and resolve under published terms.
+- Confirmed overcharge: correct the charge.
+
+All policies must remain subject to applicable law and business owner approval.
+
+==================================================
+14. NOTIFICATION SYSTEM
+==================================================
+
+Implement real in-app notifications stored in MongoDB.
+
+Generate notifications only from actual system events.
+
+Events include:
+
+- Registration.
+- Email verification.
+- Rider approval or rejection.
+- Successful payment.
+- Rider assignment.
+- Rider acceptance.
+- Package pickup.
+- Transit updates.
+- Successful delivery.
+- Cancellation.
+- Refund updates.
+- Complaint updates.
+
+Integrate Resend when configured.
+
+RESEND_API_KEY=
+EMAIL_FROM=
+
+Do not claim an email has been sent until the service confirms successful delivery or acceptance for sending.
+
+Do not add fabricated notifications.
+
+Do not introduce expensive notification services unnecessarily.
+
+==================================================
+15. SECURITY HARDENING
+==================================================
+
+Security is a critical priority.
+
+Implement the appropriate OWASP security controls.
+
+Use:
+
+- Helmet.
+- Secure HTTP headers.
+- Content Security Policy.
+- Strict CORS configuration.
+- HTTPS enforcement in production.
+- API rate limiting.
+- Input validation with Zod.
+- Protection against NoSQL injection.
+- Protection against XSS.
+- CSRF protection.
+- Secure session handling.
+- Secure password reset.
+- Multi-factor administrator authentication.
+- MongoDB least-privilege access.
+- Environment secret protection.
+- Request size limits.
+- Secure file upload validation.
+- Proper error handling.
+
+Never expose:
+- Passwords.
+- Session identifiers.
+- API secrets.
+- Private keys.
+- Card details.
+- Sensitive identity documents.
+- Unnecessary personal information.
+
+Create audit logs for:
+
+- Login attempts.
+- Failed authentication.
+- Password changes.
+- Account changes.
+- Rider approval.
+- Administrator operations.
+- Delivery status updates.
+- Payment verification.
+- Refund decisions.
+- Policy changes.
+- Security incidents.
+
+Do not log passwords, authentication tokens, card details or unnecessary sensitive data.
+
+Implement appropriate backup and recovery procedures.
+
+Document outstanding security risks rather than claiming the application is 100% secure.
+
+==================================================
+16. VERCEL AND GITHUB DEPLOYMENT
+==================================================
+
+My deployment method is:
+
+Google AI Studio → GitHub → Vercel.
+
+Prepare the complete project for this architecture.
+
+FRONTEND:
+
+- Preserve the existing React application.
+- Ensure all frontend routes work after deployment.
+- Support direct access to nested routes.
+- Use the correct Vercel build settings.
+
+BACKEND:
+
+- Adapt Express routes to Vercel Functions.
+- Follow Vercel's supported Express/serverless project structure.
+- Do not assume a permanently running Express server.
+- Do not depend on app.listen() for production Function execution.
+- Export and reuse the appropriate request handler.
+- Keep frontend and backend in the same repository where practical.
+- Reuse MongoDB connections safely.
+- Do not store persistent business state in memory.
+
+IMPORTANT SERVERLESS REQUIREMENTS:
+
+- Do not depend on permanent background processes.
+- Do not use setTimeout or setInterval for critical persistent tasks.
+- Do not rely on in-memory sessions.
+- Do not rely on permanently running WebSocket servers.
+- Implement authenticated polling for initial delivery tracking.
+- Store rider GPS updates in MongoDB only when genuinely supplied by the rider.
+- Use request-driven expiration checks for delivery offers.
+- Document optional scheduled services and their cost if required.
+
+Do not assume that Vercel Hobby Cron can run every minute or every few seconds.
+
+Do not introduce an additional paid service without explaining why it is needed.
+
+GITHUB:
+
+Create or update:
+- .gitignore
+- .env.example
+- README.md
+- Deployment documentation
+
+Never commit actual .env files or secrets.
+
+VERCEL:
+
+Prepare:
+- Correct build configuration.
+- Correct API routing.
+- Required Vercel configuration only where needed.
+- Development, Preview and Production environment variables.
+- Proper deployment instructions.
+
+Do not configure unrestricted database access without documenting the security implications.
+
+==================================================
+17. ENVIRONMENT VARIABLES
+==================================================
+
+Create an updated .env.example containing:
+
+MONGODB_URI=
+SESSION_SECRET=
+GOOGLE_CLIENT_ID=
+PAYSTACK_SECRET_KEY=
+PAYSTACK_PUBLIC_KEY=
+RESEND_API_KEY=
+EMAIL_FROM=
+APP_BASE_URL=
+ALLOWED_ORIGINS=
+NODE_ENV=
+
+Add optional variables only where actually required.
+
+Document where each secret must be configured in Google AI Studio and Vercel.
+
+Never place private secrets in frontend environment variables, public files or GitHub.
+
+Do not invent secret values.
+
+==================================================
+18. API STRUCTURE
+==================================================
+
+Organize the backend using modular routes:
+
+/api/auth
+/api/users
+/api/customers
+/api/riders
+/api/admin
+/api/deliveries
+/api/payments
+/api/refunds
+/api/notifications
+/api/reviews
+/api/support
+/api/pricing
+/api/policies
+/api/privacy
+/api/security
+/api/health
+
+Create separate:
+
+- Models.
+- Routes.
+- Controllers.
+- Services.
+- Middleware.
+- Validators.
+- Configuration.
+- Utilities.
+
+Connect the existing frontend forms and pages to actual API endpoints.
+
+Implement pagination, searching and filtering where appropriate.
+
+==================================================
+19. TESTING
+==================================================
+
+Test the actual implemented system.
+
+At minimum:
+
+- MongoDB connectivity.
+- Customer registration.
+- Customer login and logout.
+- Google token verification.
+- Rider registration.
+- Rider approval.
+- Administrator authentication.
+- Role permissions.
+- Unauthorized API access.
+- Delivery booking.
+- Rider assignment.
+- Delivery status transitions.
+- Paystack transaction initialization.
+- Payment verification.
+- Webhook signature validation.
+- Refund requests.
+- Refund processing.
+- Policy retrieval.
+- Consent recording.
+- Security controls.
+- Vercel build compatibility.
+
+Use an isolated test environment for automated tests.
+
+Do not insert test records into production data.
+
+Do not claim a test passed if it was not executed successfully.
+
+==================================================
+20. GEMINI USAGE AND TOKEN CONSERVATION
+==================================================
+
+I am using Gemini Plus and want to avoid unnecessary usage.
+
+Follow these strict efficiency rules:
+
+- Inspect my existing project before editing.
+- Reuse existing components.
+- Do not rebuild completed frontend features.
+- Do not regenerate entire source files unnecessarily.
+- Make focused changes.
+- Do not repeatedly explain the architecture.
+- Do not print entire source files in chat.
+- Do not reinstall existing dependencies.
+- Avoid unnecessary packages.
+- Avoid duplicate implementations.
+- Keep progress reports short.
+- Complete only the requested development phase at a time.
+- Preserve completed work.
+- Never restart completed phases without a technical reason.
+
+IMPLEMENTATION PHASES:
+
+PHASE 1: Inspect the existing project, establish Express backend, MongoDB connection and Vercel-compatible structure.
+
+PHASE 2: Implement database models, authentication, Google Sign-In, sessions and role-based permissions.
+
+PHASE 3: Implement rider registration, approval, delivery management and automatic rider assignment.
+
+PHASE 4: Implement Paystack payments, payment verification, refunds and notifications.
+
+PHASE 5: Implement Privacy Policy, Terms and Conditions, Payment Policy, Refund Policy, Cookie Policy and consent management.
+
+PHASE 6: Implement security hardening, audit logs, testing, GitHub configuration and Vercel deployment preparation.
+
+Do not attempt to regenerate the entire application in one response.
+
+Start with Phase 1 only.
+
+After finishing each phase:
+
+1. Make the actual project changes.
+2. Run appropriate tests.
+3. Fix errors introduced by your changes.
+4. Report what was completed in no more than a few bullet points.
+5. Identify any required configuration.
+6. Stop at a clean phase boundary.
+
+Wait for my next short instruction before starting the next phase.
+
+==================================================
+21. FINAL ACCEPTANCE REQUIREMENTS
+==================================================
+
+The finished application must have:
+
+- Existing frontend preserved.
+- Functional Express backend.
+- MongoDB Atlas integration.
+- Secure customer authentication.
+- Secure rider authentication.
+- Secure administrator authentication.
+- Google Sign-In.
+- Role-based access control.
+- Rider approval workflow.
+- Automated rider assignment.
+- Delivery management.
+- Paystack payment verification.
+- Refund management.
+- Notifications.
+- Privacy Policy.
+- Terms and Conditions.
+- Payment Policy.
+- Refund and Cancellation Policy.
+- Cookie Policy.
+- Consent management.
+- Strong security controls.
+- GitHub compatibility.
+- Vercel deployment compatibility.
+- No mock business data.
+
+Do not declare the project production-ready until the required integrations are configured and tested.
+
+FINAL INSTRUCTION:
+
+Extend my existing delivery website into a fully integrated, secure, database-driven delivery management application.
+
+Use MongoDB Atlas, Node.js, Express.js, Google Identity Services, Paystack and Vercel.
+
+Preserve my frontend.
+
+Do not add mock data.
+
+Conserve Gemini usage by working incrementally.
+
+BEGIN WITH PROJECT INSPECTION AND PHASE 1 ONLY.

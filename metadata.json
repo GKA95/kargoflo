@@ -1,0 +1,6 @@
+{
+  "name": "KargoFlow Ghana",
+  "description": "Professional Delivery Management Platform for Ghana - Modern web application for customers, dispatch riders, and logistics administrators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
